@@ -1,0 +1,23 @@
+{
+  "presets": [
+    [
+      // 已经确定进入 es 规范的语法，不包括未进入规范的语法，比如对象展开符
+      "env",
+      {
+        "modules": false,
+        "targets": {
+          "browsers": [
+            "> 1%",
+            "last 2 versions",
+            "not ie <= 8"
+          ]
+        }
+      }
+    ]
+    , "stage-1"
+  ],
+  "plugins": [
+    "transform-runtime"
+    ,"syntax-dynamic-import"
+  ]
+}
