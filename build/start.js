@@ -65,7 +65,7 @@ let serverConfig = {
 
 const url = 'http://localhost:' + PORT
 const devServer = new webpackDevServer(compiler, serverConfig);
-devServer.listen(PORT, '127.0.0.1', err => {
+devServer.listen(PORT, '0.0.0.0', err => {
   if (err) {
     return console.log(err);
   }

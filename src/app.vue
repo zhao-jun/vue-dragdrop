@@ -1,5 +1,5 @@
 <template>
-  <drag-drop @end="end" />
+  <drag-drop ref="drag" @start="start" @move="move" @end="end" />
 </template>
 
 <script>
@@ -10,8 +10,17 @@ export default {
   components: {
     DragDrop
   },
+  mounted() {},
   methods: {
-    end() {}
+    start(e, position) {
+      console.log(e, position);
+    },
+    move(e, position) {
+      console.log(position);
+    },
+    end(e, position) {
+      console.log(position);
+    }
   }
 };
 </script>
