@@ -1,10 +1,10 @@
 <template>
   <div :class="$style.container">
     <div
-      :class="`${$style.drag} ${cellRef}-${index}`"
+      :class="`${$style.drag} ${cell}-${index}`"
       v-for="(item, index) in styleObject"
       :key="index"
-      :ref="`${cellRef}-${index}`"
+      :ref="`${cell}-${index}`"
       :style="item"
       :data-index="index"
       @mousedown.prevent.stop="start"
@@ -46,7 +46,7 @@ export default {
       type: Number,
       default: 100
     },
-    cellRef: {
+    cell: {
       type: String,
       default: "cell"
     },

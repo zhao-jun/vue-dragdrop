@@ -1,5 +1,5 @@
 <template>
-  <drag-drop ref="drag" @start="start" @move="move" @end="end" />
+  <drag-drop ref="drag" @start="onStart" @move="onMove" @end="onEnd" />
 </template>
 
 <script>
@@ -12,27 +12,29 @@ export default {
   },
   mounted() {},
   methods: {
-    start(e, position) {
-      // console.log(e, position);
-    },
-    move(e, position) {
-      // console.log(position);
-    },
-    end(e, position) {
-      // console.log(position);
-      this.animation(e);
+    onStart(e) {},
+    onMove(e, position) {},
+    onEnd(e, position) {
+      let dataIndex = e.target.dataset.index;
+      if (dataIndex == 0) {
+        this.animation(
+          e,
+          { left: "50px", top: "50px" },
+          { transition: "all .3s ease-in-out" }
+        );
+      }
+      if (dataIndex == 1) {
+        this.animation(
+          e,
+          { left: "50px", top: "150px" },
+          { transition: "all .3s ease-in-out" }
+        );
+      }
     },
     animation(e, position, transition) {
-      let dataIndex = e.target.dataset.index;
-      e.target.style.transition = "all .3s ease-in-out";
-      if (dataIndex == 0) {
-        e.target.style.left = "50px";
-        e.target.style.top = "50px";
-      } else {
-        e.target.style.left = "50px";
-        e.target.style.top = "150px";
-      }
-
+      e.target.style.transition = transition.transition;
+      e.target.style.left = position.left;
+      e.target.style.top = position.top;
       setTimeout(() => {
         e.target.style.transition = null;
       }, 300);
