@@ -9,7 +9,7 @@ let config = {
   // webpack4新增
   mode: process.env.NODE_ENV || 'development',
   target: 'web', // 默认值
-  entry: resolve('src/index.js'),
+  entry: resolve('src/main.js'),
   output: {
     filename: 'bundle.js',
     path: resolve('dist/public'),

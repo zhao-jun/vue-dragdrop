@@ -6,18 +6,22 @@
       :key="index"
       :ref="`${cellRef}-${index}`"
       :style="item"
+      :data-index="index"
       @mousedown.prevent.stop="start"
       @touchstart.prevent.stop="start"
       @mousemove.prevent.stop="move"
       @touchmove.prevent.stop="move"
       @mouseup.prevent.stop="end"
       @touchend.prevent.stop="end"
-    ></div>
+    >
+      <slot></slot>
+    </div>
   </div>
 </template>
 
 <script>
 export default {
+  name: "vue-dragdrop",
   props: {
     styleObject: {
       type: Array,
@@ -48,43 +52,50 @@ export default {
     },
     mutiTouch: {
       type: Boolean,
-      default: false
+      default: true
     }
   },
   data() {
     return {
-      mutiMove: 0,
       changingDom: [],
-      currMove: ""
+      currMove: "",
+      position: []
     };
   },
   methods: {
     start(e) {
-      if (e.touches.length > 1 && !mutiTouch) return false;
-      let touch = e.touches[0];
-
-      // 暂不支持同时移动两个
-      if (this.currMove) return false;
-      e.target.style.zIndex = this.moveZIndex;
+      if (e.touches.length > 1 && !this.mutiTouch) return false;
+      let dataIndex = e.target.dataset.index;
+      let touch = [...e.touches].filter(
+        i => i.target.dataset.index == dataIndex
+      )[0];
       this.currMove = e.target;
-      // 元素位置e.target，点击位置touch
-      this.position = {
+      this.position[dataIndex] = {
         top: e.target.style.top,
         left: e.target.style.left,
         x: touch.pageX,
         y: touch.pageY
       };
-      this.$emit("start", e, this.position);
+      e.target.style.zIndex = this.moveZIndex;
+      this.$emit("start", e);
     },
     move(e) {
-      if (e.touches.length > 1 && !mutiTouch) return false;
-      let touch = e.touches[0];
+      if (
+        (e.touches.length > 1 || this.currMove !== e.target) &&
+        !this.mutiTouch
+      )
+        return false;
+      let dataIndex = e.target.dataset.index;
+      let touch = [...e.touches].filter(
+        i => i.target.dataset.index == dataIndex
+      )[0];
 
-      if (this.currMove !== touch.target) return false;
-      let moveX = touch.pageX - this.position.x;
-      let moveY = touch.pageY - this.position.y;
-      e.target.style.left = parseFloat(this.position.left) + moveX + "px";
-      e.target.style.top = parseFloat(this.position.top) + moveY + "px";
+      let moveX = touch.pageX - this.position[dataIndex].x;
+      let moveY = touch.pageY - this.position[dataIndex].y;
+      e.target.style.left =
+        parseFloat(this.position[dataIndex].left) + moveX + "px";
+      e.target.style.top =
+        parseFloat(this.position[dataIndex].top) + moveY + "px";
       this.$emit("move", e, {
         top: e.target.style.top,
         left: e.target.style.left,
@@ -93,8 +104,11 @@ export default {
       });
     },
     end(e) {
-      if (e.changedTouches[0].target !== this.currMove) return false;
-      let touch = e.changedTouches[0];
+      if (e.target !== this.currMove && !this.mutiTouch) return false;
+      let dataIndex = e.target.dataset.index;
+      let touch = [...e.changedTouches].filter(
+        i => i.target.dataset.index == dataIndex
+      )[0];
 
       this.$emit("end", e, {
         top: e.target.style.top,
@@ -103,16 +117,9 @@ export default {
         y: touch.pageY
       });
       // reset
+      this.position[dataIndex] = null;
       this.currMove = "";
-      this.position = {};
       e.target.style.zIndex = 0;
-    },
-    animation(e) {
-      e.target.style.transition = "all .3s ease-in-out";
-      e.target.style.left = "300px";
-      setTimeout(() => {
-        e.target.style.transition = null;
-      }, 300);
     }
   }
 };
