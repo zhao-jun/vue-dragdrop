@@ -1,20 +1,24 @@
 const path = require('path')
 const basicConfig = require('./webpack.config.base')
 const webpackMerge = require('webpack-merge')
-const MiniCssExtractPlugin = require('mini-css-extract-plugin')
+// const MiniCssExtractPlugin = require('mini-css-extract-plugin')
+const userConfig = require('../config')
+const VueLoaderPlugin = require('vue-loader/lib/plugin') // vue-loader v15新增
+const webpack = require('webpack')
+const packageJson = require('../package.json')
+
 const resolve = (dir) => path.join(__dirname, '..', dir)
 const include = [resolve('test'), resolve('src')]
 let config =  webpackMerge(basicConfig, {
-  // entry: {
-  //   app: resolve('vue/index.js'),
-  //   // vender: ['vue']
-  // },
+  entry: userConfig.proEntry,
   output: {
-    // 打包的时候使用chunkhash，hash所有打包文件hash值相同，其中一个文件改变就全部改变，不利于缓存
-    filename: '[name].[chunkhash:8].js',
-    // 引用路径，node端/nginx做处理
-    publicPath: '/public/',
-    // path: resolve('dist')
+    filename: 'index.js',
+    library: packageJson.name,
+    libraryTarget: 'umd',
+    path: resolve('dist')
+  },
+  externals: {
+    vue: 'vue',
   },
   module: {
     rules: [
@@ -22,8 +26,8 @@ let config =  webpackMerge(basicConfig, {
         test: /\.less$/,
         // 生产环境提取css
         use: [
-           MiniCssExtractPlugin.loader,
-          // 原来vue-loader css-module配置移到这
+          'vue-style-loader',
+          //  MiniCssExtractPlugin.loader,
           {
             loader: 'css-loader',
             options: {
@@ -38,22 +42,19 @@ let config =  webpackMerge(basicConfig, {
         include
       }
     ]
-  },
-  // 把manifest提取出来，避免模块
-  optimization: {
-    splitChunks: {
-      chunks: 'all'
-    },
-    runtimeChunk: {
-      name: 'manifest'
-    }
-  },
-  plugins: [
-    // new ExtractTextWebpackPlugin('styles.[hash:8].css')
-    new MiniCssExtractPlugin({
-      filename: 'styles.[chunkhash:8].css'
-    })
-  ]
+  }
 })
+
+config.plugins = [
+  new VueLoaderPlugin(),
+  new webpack.DefinePlugin({
+    'process.env': {
+      NODE_ENV: `"${process.env.NODE_ENV}"`
+    }
+  }),
+  // new MiniCssExtractPlugin({
+  //   filename: 'styles.[chunkhash:8].css'
+  // })
+]
 
 module.exports = config

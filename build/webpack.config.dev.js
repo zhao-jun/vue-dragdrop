@@ -10,7 +10,7 @@ const isDev = process.env.NODE_ENV === 'development'
 // : '[hash:base64:5]'
 
 const resolve = (dir) => path.join(__dirname, '..', dir)
-const include = [resolve('test'), resolve('src')]
+const include = [resolve('test'), resolve('dist'), resolve('src')]
 module.exports = webpackMerge(basicConfig, {
   entry: [
     // Include an alternative client for WebpackDevServer. A client's job is to
@@ -28,7 +28,7 @@ module.exports = webpackMerge(basicConfig, {
   module: {
     rules: [
       {
-        test: /\.less$/,
+        test: /\.(less|css)$/,
         use: [
           'vue-style-loader',
           // 原来vue-loader css-module配置移到这

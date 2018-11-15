@@ -10,7 +10,7 @@ yarn add vue-dragdrop
 ## Usage
 
 ## Props
-### styleObject
+### styleList
 Type: `Array`<br>
 Required: `false`<br>
 Default:
@@ -20,10 +20,18 @@ Default:
   top: "50px",
   width: "50px",
   height: "50px",
+  backgroundColor: "aqua",
   zIndex: 0
 }]
 ```
-根据数组长度创建相应个数的拖放元素
+css样式数组，根据数组长度创建相应个数的拖放元素
+
+### htmlList
+Type: `Array`<br>
+Required: `false`<br>
+Default: `["drag-drop"]`
+
+组件内容数组，长度和styleList相同，对应每个拖放元素的内容
 
 ### moveZIndex
 Type: `Number`<br>
@@ -58,6 +66,17 @@ Default: `false`
 <vue-dragdrop :mutiTouch="false">
 ```
 
+### changingDom
+Type: `Array`<br>
+Required: `false`<br>
+Default: `[]`
+
+禁止拖放的拖放元素数组，在动画过程的拖放元素`e.target`应加入该数组，禁止拖放，避免在动画过程中被拖放产生未知BUG
+
+```html
+<vue-dragdrop :changingDom="[]">
+```
+
 ## Events
 ### start
 Required: `false`<br>
@@ -65,7 +84,7 @@ Parameters:
 * `e` Event
 
 ```html
-<vue-draggable-resizable @start="onStart">
+<vue-dragdrop @start="onStart">
 ```
 
 ### move
@@ -79,7 +98,7 @@ Parameters:
   - `position.y` 触点x轴方向位置
 
 ```html
-<vue-draggable-resizable @move="onMove">
+<vue-dragdrop @move="onMove">
 ```
 
 ### end
@@ -93,7 +112,7 @@ Parameters:
   - `position.y` 触点x轴方向位置
 
 ```html
-<vue-draggable-resizable @end="onEnd">
+<vue-dragdrop @end="onEnd">
 ```
 
 

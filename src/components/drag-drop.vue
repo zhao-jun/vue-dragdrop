@@ -2,7 +2,7 @@
   <div :class="$style.container">
     <div
       :class="`${$style.drag} ${cell}-${index}`"
-      v-for="(item, index) in styleObject"
+      v-for="(item, index) in styleList"
       :key="index"
       :ref="`${cell}-${index}`"
       :style="item"
@@ -14,7 +14,7 @@
       @mouseup.prevent.stop="end"
       @touchend.prevent.stop="end"
     >
-      <slot></slot>
+      {{ htmlList[index] }}
     </div>
   </div>
 </template>
@@ -23,7 +23,7 @@
 export default {
   name: "vue-dragdrop",
   props: {
-    styleObject: {
+    styleList: {
       type: Array,
       default: () => [
         {
@@ -31,16 +31,14 @@ export default {
           top: "50px",
           width: "50px",
           height: "50px",
-          zIndex: 0
-        },
-        {
-          left: "50px",
-          top: "150px",
-          width: "50px",
-          height: "50px",
+          backgroundColor: "aqua",
           zIndex: 0
         }
       ]
+    },
+    htmlList: {
+      type: Array,
+      default: () => ["drag-drop"]
     },
     moveZIndex: {
       type: Number,
@@ -52,12 +50,15 @@ export default {
     },
     mutiTouch: {
       type: Boolean,
-      default: true
+      default: false
+    },
+    changingDom: {
+      type: Array,
+      default: () => []
     }
   },
   data() {
     return {
-      changingDom: [],
       currMove: "",
       position: []
     };
@@ -65,6 +66,7 @@ export default {
   methods: {
     start(e) {
       if (e.touches.length > 1 && !this.mutiTouch) return false;
+      if (this.changingDom.includes(e.target)) return false;
       let dataIndex = e.target.dataset.index;
       let touch = [...e.touches].filter(
         i => i.target.dataset.index == dataIndex
@@ -85,6 +87,7 @@ export default {
         !this.mutiTouch
       )
         return false;
+      if (this.changingDom.includes(e.target)) return false;
       let dataIndex = e.target.dataset.index;
       let touch = [...e.touches].filter(
         i => i.target.dataset.index == dataIndex
@@ -105,6 +108,7 @@ export default {
     },
     end(e) {
       if (e.target !== this.currMove && !this.mutiTouch) return false;
+      if (this.changingDom.includes(e.target)) return false;
       let dataIndex = e.target.dataset.index;
       let touch = [...e.changedTouches].filter(
         i => i.target.dataset.index == dataIndex
@@ -127,11 +131,8 @@ export default {
 
 <style lang="less" module>
 .container {
-  position: relative;
   .drag {
     position: absolute;
-    background-color: aqua;
-    z-index: 0;
   }
 }
 </style>
