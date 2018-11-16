@@ -1,8 +1,8 @@
 {
-  "name": "vue-dragdrop",
+  "name": "vue2-drag",
   "version": "0.0.1",
   "description": "Vue component for drag and drop",
-  "main": "index.js",
+  "main": "dist/index.js",
   "scripts": {
     "dev": "cross-env NODE_ENV=development node build/start.js",
     "build": "cross-env NODE_ENV=production node build/build.js",
@@ -14,21 +14,25 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/zhao-jun/vue-dragdrop.git"
+    "url": "git+https://github.com/zhao-jun/vue2-drag.git"
   },
   "author": "zhao-jun",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/zhao-jun/vue-dragdrop/issues"
+    "url": "https://github.com/zhao-jun/vue2-drag/issues"
   },
-  "homepage": "https://github.com/zhao-jun/vue-dragdrop#readme",
-  "dependencies": {
-    "axios": "^0.18.0",
-    "vue": "^2.5.17"
+  "homepage": "https://github.com/zhao-jun/vue2-drag#readme",
+  "keywords": [
+    "vue",
+    "component",
+    "drag",
+    "drop"
+  ],
+  "peerDependencies": {
+    "vue": "2.x"
   },
   "devDependencies": {
     "autoprefixer": "^9.1.5",
-    "axios-mock-adapter": "^1.15.0",
     "babel-core": "^6.26.3",
     "babel-eslint": "^10.0.1",
     "babel-loader": "^7.1.5",

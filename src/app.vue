@@ -1,5 +1,5 @@
 <template>
-  <drag-drop
+  <vue-drag
     ref="drag"
     @start="onStart"
     @move="onMove"
@@ -12,14 +12,8 @@
 </template>
 
 <script>
-import DragDrop from "./components/drag-drop";
-// import DragDrop from "../dist";
-
 export default {
   name: "app",
-  components: {
-    DragDrop
-  },
   data() {
     return {
       styleList: [

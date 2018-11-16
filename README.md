@@ -1,20 +1,26 @@
-# vue-dragdrop
+# vue2-drag
 Vue component for drag and drop
 
 ## Demo
 
 ## Install
 ```
-yarn add vue-dragdrop
+yarn add vue2-drag
 ```
 ## Usage
+```javascript
+import Vue from 'vue'
+import VueDrag from 'vue2-drag'
+
+Vue.use(VueDrag)
+```
 
 ## Props
 ### styleList
 Type: `Array`<br>
 Required: `false`<br>
 Default:
-```
+```javascript
 [{
   left: "50px",
   top: "50px",
@@ -41,7 +47,7 @@ Default: `100`
 拖放元素移动时的z-index
 
 ```html
-<vue-dragdrop :moveZIndex="100">
+<vue-drag :moveZIndex="100">
 ```
 
 ### cell
@@ -52,7 +58,7 @@ Default: `cell`
 设置拖放元素的className和ref，按拖放元素顺序为`cell-0 cell-1...`，通过此可在父组件获取拖放元素进行动画等处理
 
 ```html
-<vue-dragdrop :cell="cell">
+<vue-drag :cell="cell">
 ```
 
 ### mutiTouch
@@ -63,7 +69,7 @@ Default: `false`
 多个拖放元素是否可以同时拖放
 
 ```html
-<vue-dragdrop :mutiTouch="false">
+<vue-drag :mutiTouch="false">
 ```
 
 ### changingDom
@@ -74,7 +80,7 @@ Default: `[]`
 禁止拖放的拖放元素数组，在动画过程的拖放元素`e.target`应加入该数组，禁止拖放，避免在动画过程中被拖放产生未知BUG
 
 ```html
-<vue-dragdrop :changingDom="[]">
+<vue-drag :changingDom="[]">
 ```
 
 ## Events
@@ -84,7 +90,7 @@ Parameters:
 * `e` Event
 
 ```html
-<vue-dragdrop @start="onStart">
+<vue-drag @start="onStart">
 ```
 
 ### move
@@ -98,7 +104,7 @@ Parameters:
   - `position.y` 触点x轴方向位置
 
 ```html
-<vue-dragdrop @move="onMove">
+<vue-drag @move="onMove">
 ```
 
 ### end
@@ -112,7 +118,7 @@ Parameters:
   - `position.y` 触点x轴方向位置
 
 ```html
-<vue-dragdrop @end="onEnd">
+<vue-drag @end="onEnd">
 ```
 
 

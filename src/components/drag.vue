@@ -21,7 +21,7 @@
 
 <script>
 export default {
-  name: "vue-dragdrop",
+  name: "VueDrag",
   props: {
     styleList: {
       type: Array,
@@ -38,7 +38,7 @@ export default {
     },
     htmlList: {
       type: Array,
-      default: () => ["drag-drop"]
+      default: () => ["drag"]
     },
     moveZIndex: {
       type: Number,
