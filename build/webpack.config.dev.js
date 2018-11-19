@@ -34,11 +34,11 @@ module.exports = webpackMerge(basicConfig, {
           // 原来vue-loader css-module配置移到这
           {
             loader: 'css-loader',
-            options: {
-              modules: true,
-              localIdentName: '[path][name]-[local]-[hash:base64:5]',
-              camelCase: true // 驼峰
-            }
+            // options: {
+            //   modules: true,
+            //   localIdentName: '[path][name]-[local]-[hash:base64:5]',
+            //   camelCase: true // 驼峰
+            // }
           },
           'postcss-loader',
           'less-loader'

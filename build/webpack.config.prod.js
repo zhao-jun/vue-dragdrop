@@ -30,11 +30,11 @@ let config =  webpackMerge(basicConfig, {
           //  MiniCssExtractPlugin.loader,
           {
             loader: 'css-loader',
-            options: {
-              modules: true,
-              localIdentName: '[hash:base64:5]',
-              camelCase: true // 驼峰
-            }
+            // options: {
+            //   modules: true,
+            //   localIdentName: '[hash:base64:5]',
+            //   camelCase: true // 驼峰
+            // }
           },
           'postcss-loader',
           'less-loader'

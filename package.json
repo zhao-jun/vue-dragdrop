@@ -1,6 +1,6 @@
 {
   "name": "vue2-drag",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "Vue component for drag and drop",
   "main": "dist/index.js",
   "scripts": {

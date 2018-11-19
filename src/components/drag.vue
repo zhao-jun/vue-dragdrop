@@ -1,7 +1,7 @@
 <template>
-  <div :class="$style.container">
+  <div class="container">
     <div
-      :class="`${$style.drag} ${cell}-${index}`"
+      :class="`drag ${cell}-${index}`"
       v-for="(item, index) in styleList"
       :key="index"
       :ref="`${cell}-${index}`"
@@ -9,7 +9,6 @@
       :data-index="index"
       @mousedown.prevent.stop="start"
       @touchstart.prevent.stop="start"
-      @mousemove.prevent.stop="move"
       @touchmove.prevent.stop="move"
       @mouseup.prevent.stop="end"
       @touchend.prevent.stop="end"
@@ -20,6 +19,8 @@
 </template>
 
 <script>
+import { isMobile } from "@/utils";
+
 export default {
   name: "VueDrag",
   props: {
@@ -63,14 +64,28 @@ export default {
       position: []
     };
   },
+  mounted() {
+    if (!isMobile())
+      document.documentElement.addEventListener("mousemove", this.move, true);
+  },
+  beforeDestroy() {
+    if (!isMobile())
+      document.documentElement.removeEventListener(
+        "mousemove",
+        this.move,
+        true
+      );
+  },
   methods: {
     start(e) {
-      if (e.touches.length > 1 && !this.mutiTouch) return false;
-      if (this.changingDom.includes(e.target)) return false;
+      let touches = e.touches || e;
+      if (touches.length > 1 && !this.mutiTouch) return;
+      if (this.changingDom.includes(e.target)) return;
       let dataIndex = e.target.dataset.index;
-      let touch = [...e.touches].filter(
-        i => i.target.dataset.index == dataIndex
-      )[0];
+      let touch = (touches.length && e.targetTouches[0]) || touches;
+      // (touches.length &&
+      //   [...touches].filter(i => i.target.dataset.index == dataIndex)[0]) ||
+      // touches;
       this.currMove = e.target;
       this.position[dataIndex] = {
         top: e.target.style.top,
@@ -82,38 +97,56 @@ export default {
       this.$emit("start", e);
     },
     move(e) {
-      if (
-        (e.touches.length > 1 || this.currMove !== e.target) &&
-        !this.mutiTouch
-      )
-        return false;
-      if (this.changingDom.includes(e.target)) return false;
-      let dataIndex = e.target.dataset.index;
-      let touch = [...e.touches].filter(
-        i => i.target.dataset.index == dataIndex
-      )[0];
+      const isTouchMove = e.type.includes("touch");
+      // pc
+      if (!this.currMove && !isTouchMove) return;
+      let target;
+      let touches;
+      if (e.touches) {
+        // mobile
+        touches = e.touches;
+        target = e.target;
+      } else {
+        // pc
+        touches = e;
+        target = this.currMove;
+      }
+      // 禁止多指，默认禁止mutiTouch: false
+      if (touches.length > 1 && !this.mutiTouch) return;
+      let dataIndex = target.dataset.index;
+      // 动画清除过程时直接进入move,没有经过start
+      if (this.changingDom.includes(target) || !this.position[dataIndex])
+        return;
 
+      let touch = (touches.length && e.targetTouches[0]) || touches;
+      // (touches.length &&
+      //   [...touches].filter(i => i.target.dataset.index == dataIndex)[0]) ||
+      // touches;
       let moveX = touch.pageX - this.position[dataIndex].x;
       let moveY = touch.pageY - this.position[dataIndex].y;
-      e.target.style.left =
+      target.style.left =
         parseFloat(this.position[dataIndex].left) + moveX + "px";
-      e.target.style.top =
+      target.style.top =
         parseFloat(this.position[dataIndex].top) + moveY + "px";
       this.$emit("move", e, {
-        top: e.target.style.top,
-        left: e.target.style.left,
+        top: target.style.top,
+        left: target.style.left,
         x: touch.pageX,
         y: touch.pageY
       });
     },
     end(e) {
-      if (e.target !== this.currMove && !this.mutiTouch) return false;
-      if (this.changingDom.includes(e.target)) return false;
+      let touches = e.changedTouches || e;
+      if (e.target !== this.currMove && !this.mutiTouch) return;
       let dataIndex = e.target.dataset.index;
-      let touch = [...e.changedTouches].filter(
-        i => i.target.dataset.index == dataIndex
-      )[0];
-
+      if (this.changingDom.includes(e.target) || !this.position[dataIndex])
+        return;
+      let touch = (touches.length && e.targetTouches[0]) || touches;
+      // (touches.length &&
+      //   [...e.changedTouches].filter(
+      //     i => i.target.dataset.index == dataIndex
+      //   )[0]) ||
+      // touches;
       this.$emit("end", e, {
         top: e.target.style.top,
         left: e.target.style.left,
@@ -129,7 +162,11 @@ export default {
 };
 </script>
 
-<style lang="less" module>
+<style lang="less">
+// Ignored attempt to cancel a touchstart event with cancelable=false, for example because scrolling is in progress and cannot be interrupted.
+// html {
+//   touch-action: none;
+// }
 .container {
   .drag {
     position: absolute;

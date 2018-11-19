@@ -48,14 +48,14 @@ export default {
         this.animation(
           e,
           { left: "50px", top: "50px" },
-          { transition: "all 5s ease-in-out" }
+          { transition: "all .5s ease-in-out" }
         );
       }
       if (dataIndex == 1) {
         this.animation(
           e,
           { left: "50px", top: "150px" },
-          { transition: "all 5s ease-in-out" }
+          { transition: "all .5s ease-in-out" }
         );
       }
     },
@@ -67,7 +67,7 @@ export default {
       setTimeout(() => {
         e.target.style.transition = null;
         this.changingDom = this.changingDom.filter(i => i !== e.target);
-      }, 5000);
+      }, 500);
     }
   }
 };
