@@ -53,28 +53,36 @@ export default {
       type: Boolean,
       default: false
     },
-    changingDom: {
-      type: Array,
-      default: () => []
+    limited: {
+      type: Boolean,
+      default: false
     }
+    // changingDom: {
+    //   type: Array,
+    //   default: () => []
+    // }
   },
   data() {
     return {
       currMove: "",
-      position: []
+      position: [],
+      changingDom: []
     };
   },
   mounted() {
-    if (!isMobile())
-      document.documentElement.addEventListener("mousemove", this.move, true);
+    if (!isMobile()) {
+      document.documentElement.addEventListener("mousemove", this.move);
+      document.documentElement.addEventListener("mouseup", this.clearCurrMove);
+    }
   },
   beforeDestroy() {
-    if (!isMobile())
+    if (!isMobile()) {
+      document.documentElement.removeEventListener("mousemove", this.move);
       document.documentElement.removeEventListener(
-        "mousemove",
-        this.move,
-        true
+        "mouseup",
+        this.clearCurrMove
       );
+    }
   },
   methods: {
     start(e) {
@@ -125,9 +133,15 @@ export default {
       let moveX = touch.pageX - this.position[dataIndex].x;
       let moveY = touch.pageY - this.position[dataIndex].y;
       target.style.left =
-        parseFloat(this.position[dataIndex].left) + moveX + "px";
+        this.positionLimited(
+          parseFloat(this.position[dataIndex].left) + moveX,
+          target.parentNode.clientWidth - target.clientWidth
+        ) + "px";
       target.style.top =
-        parseFloat(this.position[dataIndex].top) + moveY + "px";
+        this.positionLimited(
+          parseFloat(this.position[dataIndex].top) + moveY,
+          target.parentNode.clientHeight - target.clientHeight
+        ) + "px";
       this.$emit("move", e, {
         top: target.style.top,
         left: target.style.left,
@@ -136,6 +150,7 @@ export default {
       });
     },
     end(e) {
+      console.log(1);
       let touches = e.changedTouches || e;
       if (e.target !== this.currMove && !this.mutiTouch) return;
       let dataIndex = e.target.dataset.index;
@@ -147,16 +162,59 @@ export default {
       //     i => i.target.dataset.index == dataIndex
       //   )[0]) ||
       // touches;
-      this.$emit("end", e, {
-        top: e.target.style.top,
-        left: e.target.style.left,
-        x: touch.pageX,
-        y: touch.pageY
-      });
+      this.$emit(
+        "end",
+        e,
+        {
+          top: e.target.style.top,
+          left: e.target.style.left,
+          x: touch.pageX,
+          y: touch.pageY
+        },
+        this.animation
+      );
       // reset
       this.position[dataIndex] = null;
       this.currMove = "";
       e.target.style.zIndex = 0;
+    },
+    clearCurrMove(e) {
+      if (e.target !== this.currMove) {
+        // TODO: 多次触发
+        this.$emit(
+          "end",
+          e,
+          {
+            top: e.target.style.top,
+            left: e.target.style.left,
+            x: touch.pageX,
+            y: touch.pageY
+          },
+          this.animation
+        );
+        this.currMove = "";
+      }
+    },
+    animation(
+      e,
+      position = { top: "0px", left: "0px" },
+      transition = { duration: 500, easing: "ease-in-out" }
+    ) {
+      e.target.style.transition = `all ${(transition.duration || 500) /
+        1000}s ${transition.easing || ""}`;
+      this.changingDom.push(e.target);
+      e.target.style.left = position.left || "0px";
+      e.target.style.top = position.top || "0px";
+      setTimeout(() => {
+        e.target.style.transition = null;
+        this.changingDom = this.changingDom.filter(i => i !== e.target);
+      }, transition.duration || 500);
+    },
+    positionLimited(position, max) {
+      if (!this.limited) return position;
+      if (position < 0) return 0;
+      if (position > max) return max;
+      return position;
     }
   }
 };
@@ -168,6 +226,8 @@ export default {
 //   touch-action: none;
 // }
 .container {
+  width: 100%;
+  height: 100%;
   .drag {
     position: absolute;
   }

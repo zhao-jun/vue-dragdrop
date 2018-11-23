@@ -72,15 +72,15 @@ Default: `false`
 <vue-drag :mutiTouch="false">
 ```
 
-### changingDom
-Type: `Array`<br>
+### limited
+Type: `Boolean`<br>
 Required: `false`<br>
-Default: `[]`
+Default: `false`
 
-禁止拖放的拖放元素数组，在动画过程的拖放元素`e.target`应加入该数组，禁止拖放，避免在动画过程中被拖放产生未知BUG
+拖放元素是否受到父元素位置限制
 
 ```html
-<vue-drag :changingDom="[]">
+<vue-drag :limited="false">
 ```
 
 ## Events
@@ -116,6 +116,12 @@ Parameters:
   - `position.left` 元素x轴方向位置
   - `position.x` 触点x轴方向位置
   - `position.y` 触点x轴方向位置
+* `animation` 回调动画，传入移动元素、移动位置、过渡动画
+  - `e` 移动元素
+  - `position` 移动位置
+    - Default: `{top: "0px", left: "0px"}`
+  - `transition` 过渡动画
+    - Default: `{duration: 500, easing: "ease-in-out"}`
 
 ```html
 <vue-drag @end="onEnd">
