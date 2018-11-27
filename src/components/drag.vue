@@ -57,10 +57,6 @@ export default {
       type: Boolean,
       default: false
     }
-    // changingDom: {
-    //   type: Array,
-    //   default: () => []
-    // }
   },
   data() {
     return {
@@ -95,6 +91,7 @@ export default {
       //   [...touches].filter(i => i.target.dataset.index == dataIndex)[0]) ||
       // touches;
       this.currMove = e.target;
+      this.currMouse = e;
       this.position[dataIndex] = {
         top: e.target.style.top,
         left: e.target.style.left,
@@ -150,7 +147,7 @@ export default {
       });
     },
     end(e) {
-      console.log(1);
+      const isTouchMove = e.type.includes("touch");
       let touches = e.changedTouches || e;
       if (e.target !== this.currMove && !this.mutiTouch) return;
       let dataIndex = e.target.dataset.index;
@@ -179,16 +176,16 @@ export default {
       e.target.style.zIndex = 0;
     },
     clearCurrMove(e) {
+      if (!this.currMove) return;
       if (e.target !== this.currMove) {
-        // TODO: 多次触发
         this.$emit(
           "end",
-          e,
+          this.currMouse,
           {
-            top: e.target.style.top,
-            left: e.target.style.left,
-            x: touch.pageX,
-            y: touch.pageY
+            top: this.currMove.style.top,
+            left: this.currMove.style.left,
+            x: e.pageX,
+            y: e.pageY
           },
           this.animation
         );

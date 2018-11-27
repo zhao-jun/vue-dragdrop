@@ -1,7 +1,9 @@
 # vue2-drag
-Vue component for drag and drop
+[![npm version](https://badge.fury.io/js/vue2-drag.png)](https://badge.fury.io/js/vue2-drag)
+> Vue component for drag and drop
 
 ## Demo
+[Demo](https://zhao-jun.github.io/vue2-drag/)
 
 ## Install
 ```

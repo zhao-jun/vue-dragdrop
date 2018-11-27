@@ -1,11 +1,12 @@
 {
   "name": "vue2-drag",
-  "version": "0.0.2",
+  "version": "0.1.0",
   "description": "Vue component for drag and drop",
   "main": "dist/index.js",
   "scripts": {
     "dev": "cross-env NODE_ENV=development node build/start.js",
     "build": "cross-env NODE_ENV=production node build/build.js",
+    "docs": "rimraf docs/js && cross-env NODE_ENV=production webpack --config build/webpack.config.docs.js",
     "dev-webpack": "cross-env NODE_ENV=development webpack-dev-server --config build/webpack.config.dev.js",
     "build-webpack": "rimraf dist && cross-env NODE_ENV=production webpack --config build/webpack.config.prod.js",
     "lint": "eslint --ext .js,.jsx,.vue src",

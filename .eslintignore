@@ -2,4 +2,5 @@ dist/
 config/
 node_modules
 build/
+docs/
 /*.js
